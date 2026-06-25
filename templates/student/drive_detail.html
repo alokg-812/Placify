@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ drive.job_title }} - Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body p-4 bg-info-subtle bg-gradient">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h3 class="card-title">Job Title: {{ drive.job_title }}</h3>
+                        <h5 class="text-muted">Company: {{ drive.company.company_name }}</h5>
+                    </div>
+                    <div>
+                        {% if has_applied %}
+                            <span class="badge bg-success badge-custom">Already Applied</span>
+                        {% elif not drive.is_active %}
+                            <span class="badge bg-secondary badge-custom">Closed</span>
+                        {% else %}
+                            <span class="badge bg-primary badge-custom">Open</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong><i class="bi bi-briefcase"></i> Job Type:</strong> {{ drive.job_type or 'Not specified' }}</p>
+                        <p><strong><i class="bi bi-geo-alt"></i> Location:</strong> {{ drive.location or 'Not specified' }}</p>
+                        <p><strong><i class="bi bi-cash"></i> Salary:</strong> {{ drive.salary or 'Not specified' }}</p>
+                        <p><strong><i class="bi bi-people"></i> Positions:</strong> {{ drive.total_positions or 'Not specified' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        {% if drive.required_cgpa %}
+                        <p><strong><i class="bi bi-bar-chart"></i> Minimum CGPA:</strong> {{ drive.required_cgpa }}</p>
+                        {% endif %}
+                        {% if drive.eligible_departments %}
+                        <p><strong><i class="bi bi-book"></i> Eligible Departments:</strong> {{ drive.eligible_departments }}</p>
+                        {% endif %}
+                        {% if drive.eligible_years %}
+                        <p><strong><i class="bi bi-mortarboard"></i> Eligible Years:</strong> {{ drive.eligible_years }}</p>
+                        {% endif %}
+                        {% if drive.deadline %}
+                        <p><strong><i class="bi bi-calendar"></i> Deadline:</strong> {{ drive.deadline.strftime('%Y-%m-%d') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if drive.job_description %}
+                <div class="mb-4">
+                    <h5>Job Description</h5>
+                    <p>{{ drive.job_description }}</p>
+                </div>
+                {% endif %}
+
+                <div class="d-flex gap-2">
+                    {% if has_applied %}
+                        <button class="btn btn-secondary" disabled>Already Applied</button>
+                        <a href="{{ url_for('student.applications') }}" class="btn btn-outline-primary">View My Applications</a>
+                    {% elif not drive.is_active %}
+                        <button class="btn btn-secondary" disabled>Drive Closed</button>
+                    {% elif student.is_blacklisted %}
+                        <button class="btn btn-danger" disabled>Account Blacklisted</button>
+                    {% elif drive.required_cgpa and student.cgpa and student.cgpa < drive.required_cgpa %}
+                        <button class="btn btn-warning" disabled>CGPA Requirement Not Met</button>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('student.apply_drive', drive_id=drive.id) }}">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to apply for this position?')">
+                                <i class="bi bi-send"></i> Apply Now
+                            </button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('student.drives') }}" class="btn btn-secondary">Back to Drives</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
