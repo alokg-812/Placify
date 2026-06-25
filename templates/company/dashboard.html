@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Company Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-building"></i> Company Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body bg-info-subtle">
+                <!-- <h5 class="card-title text-center">Company Details</h5> -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Company Name:</strong> {{ company.company_name }}</p>
+                        <p><strong>Industry:</strong> {{ company.industry or 'N/A' }}</p>
+                        <p><strong>Website:</strong>
+                            {% if company.website %}
+                                <a href="{{ company.website }}" target="_blank" rel="noopener noreferrer">
+                                {{ company.website }}</a>
+                            {% else %}
+                                <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Contact Person:</strong> {{ company.contact_person or 'N/A' }}</p>
+                        <p><strong>Phone:</strong> {{ company.phone or 'N/A' }}</p>
+                        <p><strong>Email:</strong> {{ company.user.email }}</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('company.profile') }}" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border border-dark">
+            <div class="card-body">
+                <h5 class="card-title text-center pb-2">Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('company.create_drive') }}" class="btn btn-outline-success">
+                        <i class="bi bi-plus-circle"></i> Create New Drive
+                    </a>
+                    <a href="{{ url_for('company.drives') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-briefcase"></i> View All Drives
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-dark bg-gradient">
+        <h5 class="mb-0 text-light">My Placement Drives</h5>
+    </div>
+    <div class="card-body">
+        {% if drive_stats %}
+        <div class="table-responsive">
+            <table class="table table-hover bg-dark bg-gradient">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Applications</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in drive_stats %}
+                    <tr>
+                        <td>{{ stat.drive.job_title }}</td>
+                        <td>{{ stat.drive.job_type or 'N/A' }}</td>
+                        <td>{{ stat.drive.location or 'N/A' }}</td>
+                        <td>
+                            <a href="{{ url_for('company.drive_applications', drive_id=stat.drive.id) }}" class="badge bg-info">
+                                {{ stat.applicant_count }} Applications
+                            </a>
+                        </td>
+                        <td>
+                            {% if not stat.drive.is_active %}
+                                <span class="badge bg-secondary">Closed</span>
+                            {% elif stat.drive.is_approved %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ stat.drive.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('company.edit_drive', drive_id=stat.drive.id) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            {% if stat.drive.is_active %}
+                                <a href="{{ url_for('company.close_drive', drive_id=stat.drive.id) }}" class="btn btn-sm btn-secondary" onclick="return confirm('Are you sure you want to close this drive?')">
+                                    <i class="bi bi-x-circle"></i> Close
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No placement drives created yet. <a href="{{ url_for('company.create_drive') }}">Create your first drive</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
