@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people"></i> Students</h5>
+                <h2 class="mb-0">{{ total_students }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-building"></i> Companies</h5>
+                <h2 class="mb-0">{{ total_companies }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-briefcase"></i> Drives</h5>
+                <h2 class="mb-0">{{ total_drives }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-file-earmark-text"></i> Applications</h5>
+                <h2 class="mb-0">{{ total_applications }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border border-dark">
+            <div class="card-body">
+                <h5 class="card-title">Pending Approvals</h5>
+                <p class="mb-2"><strong>Companies awaiting approval:</strong> {{ pending_companies }}</p>
+                <p class="mb-0"><strong>Drives awaiting approval:</strong> {{ pending_drives }}</p>
+                <div class="mt-3">
+                    <a href="{{ url_for('admin.companies') }}" class="btn btn-sm btn-primary">Review Companies</a>
+                    <a href="{{ url_for('admin.drives') }}" class="btn btn-sm btn-info">Review Drives</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card border border-dark">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('admin.students') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-people"></i> Manage Students
+                    </a>
+                    <a href="{{ url_for('admin.companies') }}" class="btn btn-outline-success">
+                        <i class="bi bi-building"></i> Manage Companies
+                    </a>
+                    <a href="{{ url_for('admin.applications') }}" class="btn btn-outline-warning">
+                        <i class="bi bi-file-earmark-text"></i> View All Applications
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border border-dark">
+    <div class="card-header bg-gradient bg-dark text-light">
+        <h5 class="mb-0">Recent Applications</h5>
+    </div>
+    <div class="card-body">
+        {% if recent_applications %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Company</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Applied On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application, student, drive, company in recent_applications %}
+                    <tr>
+                        <td>{{ student.full_name }}</td>
+                        <td>{{ company.company_name }}</td>
+                        <td>{{ drive.job_title }}</td>
+                        <td>
+                            {% if application.status == 'Applied' %}
+                                <span class="badge bg-secondary">Applied</span>
+                            {% elif application.status == 'Shortlisted' %}
+                                <span class="badge bg-primary">Shortlisted</span>
+                            {% elif application.status == 'Selected' %}
+                                <span class="badge bg-success">Selected</span>
+                            {% elif application.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ application.applied_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No applications yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

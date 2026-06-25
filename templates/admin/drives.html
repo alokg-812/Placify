@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Placement Drives - Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-briefcase"></i> Manage Placement Drives</h2>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="btn-group" role="group">
+      <a href="{{ url_for('admin.drives', status='all') }}"
+        class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">All</a>
+      <a href="{{ url_for('admin.drives', status='pending') }}"
+        class="btn btn-outline-warning {% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+      <a href="{{ url_for('admin.drives', status='approved') }}"
+        class="btn btn-outline-success {% if status_filter == 'approved' %}active{% endif %}">Approved</a>
+      <a href="{{ url_for('admin.drives', status='closed') }}"
+        class="btn btn-outline-secondary {% if status_filter == 'closed' %}active{% endif %}">Closed</a>
+    </div>
+  </div>
+</div>
+
+<div class="card border border-dark">
+  <div class="card-body">
+    {% if drives %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Job Title</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for drive in drives %}
+          <tr>
+            <td>{{ drive.company.company_name }}</td>
+            <td>{{ drive.job_title }}</td>
+            <td>{{ drive.job_type or 'N/A' }}</td>
+            <td>{{ drive.location or 'N/A' }}</td>
+            <td>{{ drive.salary or 'N/A' }}</td>
+            <td>
+              {% if not drive.is_active %}
+              <span class="badge bg-secondary">Closed</span>
+              {% elif drive.is_approved %}
+              <span class="badge bg-success">Approved</span>
+              {% else %}
+              <span class="badge bg-warning">Pending</span>
+              {% endif %}
+            </td>
+            <td>{{ drive.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>
+              {% if not drive.is_approved and drive.is_active %}
+              <a href="{{ url_for('admin.approve_drive', drive_id=drive.id) }}" class="btn btn-sm btn-success">
+                <i class="bi bi-check-circle"></i> Approve
+              </a>
+              {% elif drive.is_approved and drive.is_active %}
+              <a href="{{ url_for('admin.reject_drive', drive_id=drive.id) }}" class="btn btn-sm btn-warning">
+                <i class="bi bi-x-circle"></i> Revoke
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-0">No placement drives found.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
