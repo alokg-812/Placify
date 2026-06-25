@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Placement Portal{% endblock %}
+
+{% block content %}
+
+<style>
+  .login-bg {
+    height: 650px;
+    background-image: url("{{ url_for('static', filename='images/loginPageBG.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    /* background-repeat: no-repeat; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+</style>
+
+<div class="login-bg">
+  <div class="col-md-6 col-lg-4">
+    <div class="card login-card">
+      <div class="card-body p-4">
+
+        <h3 class="card-title text-center mb-4">
+          <i class="bi bi-box-arrow-in-right"></i> Login
+        </h3>
+
+        <form method="POST">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+          <p class="mb-2">Don't have an account?</p>
+          <a href="{{ url_for('auth.register_student') }}" class="btn btn-outline-primary btn-sm me-2">
+            Register as Student
+          </a>
+          <a href="{{ url_for('auth.register_company') }}" class="btn btn-outline-success btn-sm">
+            Register as Company
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="alert alert-info mt-3">
+      <strong>Default Admin Credentials:</strong><br>
+      Email: admin@placify.portal<br>
+      Password: admin123
+    </div>
+  </div>
+</div>
+
+{% endblock %}

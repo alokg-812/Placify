@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Company Registration - Placement Portal{% endblock %}
+
+{% block content %}
+<style>
+    .login-bg {
+        /* min-height: 100vh; */
+        height: 820px;
+        background-image: url("{{ url_for('static', filename='images/companyRegisterBG.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        /* background-repeat: no-repeat; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<div class="row justify-content-center mt-4 login-bg">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border border-dark">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4">
+                    <i class="bi bi-building"></i> Company Registration
+                </h3>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Your registration will be reviewed by the admin. You can login only after approval.
+                </div>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="company_name" name="company_name" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="industry" class="form-label">Industry</label>
+                            <input type="text" class="form-control" id="industry" name="industry">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="website" class="form-label">Website</label>
+                            <input type="url" class="form-control" id="website" name="website">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_person" class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" id="contact_person" name="contact_person">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Register</button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
